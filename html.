@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jejak Ikhlas: Petualangan Hati yang Tulus | PAI Kelas 7 Fase D</title>
+    <style>
+        :root {
+            --primary: #0d9488;
+            --primary-dark: #0f766e;
+            --secondary: #f59e0b;
+            --accent: #10b981;
+            --danger: #ef4444;
+            --bg-light: #f0fdf4;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #4b5563;
+            --radius: 16px;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: 850px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            min-height: 600px;
+        }
+
+        /* Header UI */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .header-info h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .header-info p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .stat-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-audio {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.3rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--secondary);
+            transition: width 0.4s ease;
+        }
+
+        /* Content Area */
+        .content {
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out forwards;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Typography & Components */
+        h2 {
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        p.desc {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 30px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(13, 148, 136, 0.3);
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-center {
+            display: block;
+            margin: 20px auto 0;
+            width: fit-content;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus, .input-group textarea:focus {
+            border-color: var(--primary);
+        }
+
+        /* Cards Layout */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+
+        .info-card {
+            background: #f8fafc;
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .info-card h3 {
+            color: var(--primary-dark);
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .dalil-box {
+            background: #ecfdf5;
+            border: 1px dashed var(--primary);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .arabic {
+            font-family: 'Amiri', 'Traditional Arabic', serif;
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+            color: #064e3b;
+            direction: rtl;
+        }
+
+        .translation {
+            font-size: 0.88rem;
+            font-style: italic;
+            color: var(--text-muted);
+        }
+
+        /* Options List for Quiz */
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .option-btn {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            padding: 14px 18px;
+            border-radius: 10px;
+            text-align: left;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .option-btn:hover {
+            border-color: var(--primary);
+            background: #f0fdf4;
+        }
+
+        .option-btn.correct {
+            background: #dcfce7;
+            border-color: var(--accent);
+            color: #166534;
+            font-weight: bold;
+        }
+
+        .option-btn.wrong {
+            background: #fee2e2;
+            border-color: var(--danger);
+            color: #991b1b;
+        }
+
+        .feedback-box {
+            margin-top: 15px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            display: none;
+        }
+
+        .feedback-box.show {
+            display: block;
+        }
+
+        .feedback-box.correct {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        .feedback-box.wrong {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        /* Sorting / Matching Activity */
+        .classify-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .drop-zone {
+            background: #f1f5f9;
+            border: 2px dashed #cbd5e1;
+            border-radius: 10px;
+            padding: 12px;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .drop-zone h4 {
+            text-align: center;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .drag-item {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            font-size: 0.85rem;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+
+        .drag-item:active {
+            transform: scale(0.98);
+        }
+
+        /* Certificate / Final Result */
+        .certificate-card {
+            background: #ffffff;
+            border: 8px double var(--primary);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .certificate-card h3 {
+            color: var(--primary-dark);
+            font-size: 1.6rem;
+            margin-bottom: 5px;
+        }
+
+        .student-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--secondary);
+            border-bottom: 2px solid var(--secondary);
+            display: inline-block;
+            padding: 2px 20px;
+            margin: 10px 0;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 12px;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <!-- Header -->
+    <header>
+        <div class="header-info">
+            <h1>Jejak Ikhlas</h1>
+            <p>PAI Kelas 7 Fase D - SMP</p>
+        </div>
+        <div class="header-stats">
+            <div class="stat-badge" title="Skor Kamu">
+                🏆 <span id="score-display">0</span>
+            </div>
+            <div class="stat-badge" title="Kesempatan">
+                ❤️ <span id="lives-display">3</span>
+            </div>
+            <button class="btn-audio" id="mute-btn" onclick="toggleAudio()" title="Aktifkan/Matikan Suara">🔊</button>
+        </div>
+    </header>
+
+    <!-- Progress Indicator -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+    <!-- Main Dynamic Content -->
+    <div class="content">
+
+        <!-- SCREEN 1: WELCOME & REGISTRATION -->
+        <div id="screen-welcome" class="screen active">
+            <h2>Petualangan Menata Hati: Ikhlas dalam Amalku</h2>
+            <p class="desc">
+                Selamat datang di media interaktif PAI! Di sini kamu akan mendalami makna ikhlas melalui kajian dalil, analisis kasus nyata di sekolah, dan latihan membuat komitmen kebaikan.
+            </p>
+
+            <div class="info-card">
+                <h3>🎯 Tujuan Pembelajaran:</h3>
+                <ul style="padding-left: 20px; font-size: 0.9rem; color: var(--text-muted); line-height: 1.5;">
+                    <li>Menjelaskan konsep ikhlas dalam beribadah dan bermuamalah.</li>
+                    <li>Mengidentifikasi dalil naqli tentang niat dan ikhlas.</li>
+                    <li>Memberikan contoh & menerapkan perilaku ikhlas di lingkungan sekolah.</li>
+                </ul>
+            </div>
+
+            <div class="input-group">
+                <label for="input-name">Masukkan Nama Lengkapmu:</label>
+                <input type="text" id="input-name" placeholder="Contoh: Ahmad Rizky" required>
+            </div>
+
+            <div class="input-group">
+                <label for="input-class">Kelas / Absen:</label>
+                <input type="text" id="input-class" placeholder="Contoh: 7A / 12">
+            </div>
+
+            <button class="btn btn-center" onclick="startLearning()">Mulai Petualangan 🚀</button>
+        </div>
+
+        <!-- SCREEN 2: KAJIAN DALIL & KONSEP -->
+        <div id="screen-materi" class="screen">
+            <h2>Modul 1: Kajian Dalil & Konsep Ikhlas</h2>
+            <p class="desc">Pahami fondasi utama ikhlas sebelum menguji pemahamanmu.</p>
+
+            <div class="dalil-box">
+                <div class="arabic">وَمَآ أُمِرُوٓا۟ إِلَّا لِيَعْبُدُوا۟ ٱللَّهَ مُخْلِصِينَ لَهُ ٱلدِّينَ حُنَفَآءَ</div>
+                <div class="translation">
+                    "Padahal mereka tidak disuruh kecuali supaya menyembah Allah dengan memurnikan ketaatan kepada-Nya dalam (menjalankan) agama yang lurus..." (Q.S. Al-Bayyinah [98]: 5)
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="info-card">
+                    <h3>1. Ikhlas dalam Ibadah</h3>
+                    <p style="font-size:0.88rem; color:var(--text-muted);">
+                        Beribadah (seperti shalat, puasa, dan membaca Al-Qur'an) murni hanya mengharap ridha Allah Swt., bukan agar dipuji alim, rajin, atau mendapatkan imbalan duniawi.
+                    </p>
+                </div>
+                <div class="info-card">
+                    <h3>2. Ikhlas dalam Muamalah</h3>
+                    <p style="font-size:0.88rem; color:var(--text-muted);">
+                        Berinteraksi dan menolong sesama (seperti membantu teman, tugas kelompok, bersedekah) tanpa pamrih, tidak menyebut-nyebut kebaikan, dan tidak menyakiti perasaan orang lain.
+                    </p>
+                </div>
+            </div>
+
+            <button class="btn btn-center" onclick="nextStep()">Lanjut ke Kuis Kasus 📝</button>
+        </div>
+
+        <!-- SCREEN 3: QUIZ & KASUS INTERAKTIF -->
+        <div id="screen-quiz" class="screen">
+            <div style="display:flex; justify-size:space-between; align-items:center; margin-bottom:10px;">
+                <span style="font-size:0.85rem; font-weight:bold; color:var(--primary);" id="quiz-step-text">Soal 1 dari 5</span>
+            </div>
+
+            <h3 id="quiz-question" style="margin-bottom:15px; font-size:1.1rem; line-height:1.5; color:var(--text-main);">
+                Loading pertanyaan...
+            </h3>
+
+            <div class="options-grid" id="options-container">
+                <!-- Dynamic Options -->
+            </div>
+
+            <div id="feedback-box" class="feedback-box"></div>
+
+            <button class="btn btn-center" id="next-quiz-btn" style="display:none;" onclick="handleNextQuiz()">Pertanyaan Selanjutnya ➡️</button>
+        </div>
+
+        <!-- SCREEN 4: PRAKTIK & SIMULASI IKHLAS (MATCHING) -->
+        <div id="screen-simulasi" class="screen">
+            <h2>Modul 3: Membedakan Perilaku (Ikhlas vs Riya)</h2>
+            <p class="desc">Klik pada item pernyataan di bawah ini untuk memasukkannya ke dalam kategori yang tepat!</p>
+
+            <div id="classify-items" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:15px; justify-content:center;">
+                <!-- Draggable/Clickable items will be injected here -->
+            </div>
+
+            <div class="classify-container">
+                <div class="drop-zone" id="zone-ikhlas" onclick="assignSelected('ikhlas')">
+                    <h4 style="color:var(--primary-dark);">💚 Sikap Ikhlas (Terpuji)</h4>
+                    <div class="item-list" id="list-ikhlas"></div>
+                </div>
+                <div class="drop-zone" id="zone-riya" onclick="assignSelected('riya')">
+                    <h4 style="color:var(--danger);">⚠️ Sikap Riya' / Sum'ah (Dihindari)</h4>
+                    <div class="item-list" id="list-riya"></div>
+                </div>
+            </div>
+
+            <div id="sim-feedback" class="feedback-box" style="margin-top:15px;"></div>
+
+            <button class="btn btn-center" id="check-sim-btn" onclick="checkSimulation()">Verifikasi Jawaban 🔍</button>
+            <button class="btn btn-center" id="next-sim-btn" style="display:none;" onclick="nextStep()">Lanjut ke Refleksi 🌟</button>
+        </div>
+
+        <!-- SCREEN 5: REFLEKSI & KOMITMEN DIRI -->
+        <div id="screen-refleksi" class="screen">
+            <h2>Modul 4: Lembar Refleksi & Komitmen Diri</h2>
+            <p class="desc">Ikhlas bukan sekadar teori di kelas, melainkan niat yang dipraktikkan dalam aktivitas harianmu di sekolah.</p>
+
+            <div class="input-group">
+                <label for="commit-1">1. Tuliskan 1 tindakan ikhlas yang akan kamu biasakan saat piket/membersihkan kelas:</label>
+                <textarea id="commit-1" rows="2" placeholder="Contoh: Tetap membersihkan sudut kelas walau teman kelompok piket sudah pulang..."></textarea>
+            </div>
+
+            <div class="input-group">
+                <label for="commit-2">2. Bagaimana caramu menjaga hati agar tidak pamer (riya') saat dipuji guru atau teman?</label>
+                <textarea id="commit-2" rows="2" placeholder="Contoh: Mengucapkan Alhamdulillah dan menyadarkan diri bahwa kemampuan ini adalah titipan Allah..."></textarea>
+            </div>
+
+            <button class="btn btn-center" onclick="finishJourney()">Selesaikan & Lihat Hasil 🎓</button>
+        </div>
+
+        <!-- SCREEN 6: RESULT & CERTIFICATE -->
+        <div id="screen-result" class="screen">
+            <h2>Hasil Akhir Pembelajaran</h2>
+            <p class="desc">Terima kasih telah menyelesaikan seluruh tahapan belajar!</p>
+
+            <div class="certificate-card" id="certificate">
+                <p style="text-transform:uppercase; letter-spacing:2px; font-size:0.8rem; color:var(--text-muted);">Sertifikat Komitmen Pembelajar</p>
+                <h3>IKHLAS DALAM AMAL</h3>
+                <p>Diberikan Kepada:</p>
+                <div class="student-name" id="cert-name">Nama Siswa</div>
+                <p style="font-size:0.9rem; color:var(--text-muted);" id="cert-class">Kelas: -</p>
+
+                <div style="margin:20px 0; display:flex; justify-content:center; gap:20px;">
+                    <div>
+                        <div style="font-size:1.5rem; font-weight:bold; color:var(--primary);" id="final-score">0</div>
+                        <div style="font-size:0.8rem; color:var(--text-muted);">Skor Pemahaman</div>
+                    </div>
+                    <div>
+                        <div style="font-size:1.5rem; font-weight:bold; color:var(--secondary);" id="final-predicate">Sangat Baik</div>
+                        <div style="font-size:0.8rem; color:var(--text-muted);">Predikat Sikap</div>
+                    </div>
+                </div>
+
+                <div style="text-align:left; background:#f8fafc; padding:12px; border-radius:8px; font-size:0.85rem; color:var(--text-main); margin-top:10px;">
+                    <strong>Komitmen Diri Saya:</strong>
+                    <p id="cert-commit" style="font-style:italic; margin-top:4px; color:var(--text-muted);"></p>
+                </div>
+            </div>
+
+            <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
+                <button class="btn" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
+                <button class="btn" style="background:#64748b;" onclick="restartGame()">🔄 Ulangi Latihan</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        Media Pembelajaran Edukatif PAI Kelas 7 Fase D &bull; Kurikulum Merdeka &bull; Siap Diunggah ke GitHub Pages
+    </footer>
+</div>
+
+<script>
+    /* ===================================================
+       AUDIO SYNTHESIZER (Web Audio API - No External Files)
+       =================================================== */
+    let audioCtx = null;
+    let audioEnabled = true;
+
+    function initAudio() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+    }
+
+    function toggleAudio() {
+        audioEnabled = !audioEnabled;
+        document.getElementById('mute-btn').innerText = audioEnabled ? '🔊' : '🔇';
+    }
+
+    function playSound(type) {
+        if (!audioEnabled) return;
+        initAudio();
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        const now = audioCtx.currentTime;
+
+        if (type === 'correct') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(523.25, now); // C5
+            osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.15); // E5
+            gain.gain.setValueAtTime(0.3, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+            osc.start(now);
+            osc.stop(now + 0.3);
+        } else if (type === 'wrong') {
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(220, now); // A3
+            osc.frequency.setValueAtTime(174.61, now + 0.1); // F3
+            gain.gain.setValueAtTime(0.3, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+            osc.start(now);
+            osc.stop(now + 0.3);
+        } else if (type === 'complete') {
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(440, now);
+            osc.frequency.setValueAtTime(554.37, now + 0.1);
+            osc.frequency.setValueAtTime(659.25, now + 0.2);
+            gain.gain.setValueAtTime(0.3, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+            osc.start(now);
+            osc.stop(now + 0.5);
+        }
+    }
+
+    /* ===================================================
+       GAME STATE & DATA
+       =================================================== */
+    let userData = {
+        name: '',
+        class: '',
+        score: 0,
+        lives: 3,
+        commit1: '',
+        commit2: ''
+    };
+
+    let currentQuizIndex = 0;
+
+    const quizQuestions = [
+        {
+            question: "Manakah di bawah ini yang merupakan definisi paling tepat dari konsep ikhlas dalam beribadah?",
+            options: [
+                "Mengerjakan ibadah agar disukai oleh guru dan dipuji orang tua.",
+                "Memurnikan niat beribadah hanya semata-mata mengharapkan ridha Allah Swt.",
+                "Melakukan ibadah shalat hanya ketika berada di lingkungan sekolah.",
+                "Berdoa dengan suara lantang agar orang lain mengetahui ketakwaan kita."
+            ],
+            correct: 1,
+            explanation: "Ikhlas secara bahasa berarti murni. Ikhlas dalam ibadah artinya membersihkan niat dari tujuan selain Allah Swt."
+        },
+        {
+            question: "Surah Al-Bayyinah [98] ayat 5 menegaskan bahwa umat manusia diperintahkan untuk menyembah Allah Swt. dengan syarat...",
+            options: [
+                "Menghafal seluruh isi ayat Al-Qur'an dalam waktu singkat.",
+                "Memurnikan ketaatan kepada-Nya dalam menjalankan agama.",
+                "Mengeluarkan seluruh harta benda tanpa tersisa.",
+                "Melakukan ibadah di tempat yang sangat terpencil saja."
+            ],
+            correct: 1,
+            explanation: "Q.S. Al-Bayyinah ayat 5 menekankan 'mukhlisiina lahud-diin', yaitu memurnikan ketaatan/agama hanya untuk Allah."
+        },
+        {
+            question: "Ahmad tetap menyapu dan merapikan ruang kelas saat tugas piket, meskipun teman-teman satu kelompoknya sudah pulang duluan. Sikap Ahmad mencerminkan...",
+            options: [
+                "Pamer keterampilan agar dijadikan ketua kelas.",
+                "Kehati-hatian karena takut dimarahi guru piket.",
+                "Bentuk ikhlas dalam menjalankan tanggung jawab dan amanah sekolah.",
+                "Sikap terpaksa karena tidak punya pilihan lain."
+            ],
+            correct: 2,
+            explanation: "Melaksanakan tanggung jawab dengan sungguh-sungguh tanpa tergantung kehadiran orang lain adalah ciri ikhlas dalam muamalah/sekolah."
+        },
+        {
+            question: "Saat kerja kelompok PAI, Nisa mendapati bagian tugas temannya kurang rapi. Tindakan Nisa yang mencerminkan ikhlas dalam berinteraksi adalah...",
+            options: [
+                "Mengejeknya di depan kelas agar teman tersebut merasa malu.",
+                "Membantunya merapikan tulisan dengan ramah tanpa menyombongkan diri.",
+                "Melaporkan kesalahan teman tersebut ke media sosial.",
+                "Menolak membantu jika tidak diberi imbalan uang saku."
+            ],
+            correct: 1,
+            explanation: "Ikhlas dalam bermuamalah diwujudkan dengan membantu sesama secara santun tanpa niat merendahkan atau meminta imbalan."
+        },
+        {
+            question: "Siti bersedekah memasukkan uang ke kotak amal masjid sekolah. Ia berusaha tidak menceritakan jumlah uangnya kepada teman-temannya. Perilaku Siti bertujuan untuk menghindari penyakit hati yaitu...",
+            options: [
+                "Pikir (Pelit)",
+                "Riya' dan Sum'ah (Pamer dan ingin didengar)",
+                "Tawakal",
+                "Qana'ah"
+            ],
+            correct: 1,
+            explanation: "Menyembunyikan amalan kebaikan adalah salah satu cara menjaga hati dari riya' (pamer) dan sum'ah (mencari popularitas)."
+        }
+    ];
+
+    const simulasiItems = [
+        { id: 1, text: "Tetap belajar dengan tekun saat ada maupun tidak ada ujian.", category: "ikhlas" },
+        { id: 2, text: "Rajin shalat berjamaah di sekolah hanya saat diawasi guru PAI.", category: "riya" },
+        { id: 3, text: "Membantu merapikan mukena di mushalla sekolah secara diam-diam.", category: "ikhlas" },
+        { id: 4, text: "Mengunggah foto struk donasi di media sosial agar dipuji dermawan.", category: "riya" },
+        { id: 5, text: "Menerima kritik dan saran teman kelompok demi kebaikan bersama.", category: "ikhlas" },
+        { id: 6, text: "Mengungkit-ungkit kebaikan yang pernah diberikan kepada teman saat berselisih.", category: "riya" }
+    ];
+
+    let selectedSimItem = null;
+    let simAssignments = { ikhlas: [], riya: [] };
+
+    /* ===================================================
+       FLOW NAVIGATION LOGIC
+       =================================================== */
+    function showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+        updateProgressBar();
+    }
+
+    function updateProgressBar() {
+        const screens = ['screen-welcome', 'screen-materi', 'screen-quiz', 'screen-simulasi', 'screen-refleksi', 'screen-result'];
+        const activeIndex = screens.findIndex(id => document.getElementById(id).classList.contains('active'));
+        const percentage = (activeIndex / (screens.length - 1)) * 100;
+        document.getElementById('progress-bar').style.width = percentage + '%';
+    }
+
+    function startLearning() {
+        const name = document.getElementById('input-name').value.trim();
+        const cls = document.getElementById('input-class').value.trim();
+
+        if (!name) {
+            alert('Mohon isi nama lengkapmu terlebih dahulu!');
+            return;
+        }
+
+        userData.name = name;
+        userData.class = cls || '7';
+        userData.score = 0;
+        userData.lives = 3;
+
+        updateHeaderStats();
+        showScreen('screen-materi');
+    }
+
+    function updateHeaderStats() {
+        document.getElementById('score-display').innerText = userData.score;
+        document.getElementById('lives-display').innerText = userData.lives;
+    }
+
+    function nextStep() {
+        const activeScreen = document.querySelector('.screen.active').id;
+        if (activeScreen === 'screen-materi') {
+            initQuiz();
+            showScreen('screen-quiz');
+        } else if (activeScreen === 'screen-simulasi') {
+            showScreen('screen-refleksi');
+        }
+    }
+
+    /* ===================================================
+       QUIZ LOGIC
+       =================================================== */
+    function initQuiz() {
+        currentQuizIndex = 0;
+        renderQuizQuestion();
+    }
+
+    function renderQuizQuestion() {
+        const q = quizQuestions[currentQuizIndex];
+        document.getElementById('quiz-step-text').innerText = `Soal ${currentQuizIndex + 1} dari ${quizQuestions.length}`;
+        document.getElementById('quiz-question').innerText = q.question;
+
+        const optionsContainer = document.getElementById('options-container');
+        optionsContainer.innerHTML = '';
+
+        const feedbackBox = document.getElementById('feedback-box');
+        feedbackBox.className = 'feedback-box';
+        feedbackBox.style.display = 'none';
+
+        document.getElementById('next-quiz-btn').style.display = 'none';
+
+        q.options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerHTML = `<span>${String.fromCharCode(65 + idx)}. ${opt}</span>`;
+            btn.onclick = () => checkAnswer(idx);
+            optionsContainer.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selectedIndex) {
+        const q = quizQuestions[currentQuizIndex];
+        const buttons = document.querySelectorAll('.option-btn');
+        const feedbackBox = document.getElementById('feedback-box');
+
+        // Disable all buttons after selection
+        buttons.forEach(b => b.onclick = null);
+
+        if (selectedIndex === q.correct) {
+            playSound('correct');
+            buttons[selectedIndex].classList.add('correct');
+            userData.score += 20;
+            feedbackBox.innerHTML = `<strong>Jawaban Benar! 🎉</strong><br>${q.explanation}`;
+            feedbackBox.className = 'feedback-box show correct';
+        } else {
+            playSound('wrong');
+            buttons[selectedIndex].classList.add('wrong');
+            buttons[q.correct].classList.add('correct');
+            userData.lives = Math.max(0, userData.lives - 1);
+            feedbackBox.innerHTML = `<strong>Jawaban Kurang Tepat! ⚠️</strong><br>${q.explanation}`;
+            feedbackBox.className = 'feedback-box show wrong';
+        }
+
+        updateHeaderStats();
+        document.getElementById('next-quiz-btn').style.display = 'block';
+    }
+
+    function handleNextQuiz() {
+        currentQuizIndex++;
+        if (currentQuizIndex < quizQuestions.length && userData.lives > 0) {
+            renderQuizQuestion();
+        } else {
+            initSimulasi();
+            showScreen('screen-simulasi');
+        }
+    }
+
+    /* ===================================================
+       SIMULASI / MATCHING LOGIC
+       =================================================== */
+    function initSimulasi() {
+        simAssignments = { ikhlas: [], riya: [] };
+        selectedSimItem = null;
+
+        const container = document.getElementById('classify-items');
+        container.innerHTML = '';
+
+        document.getElementById('list-ikhlas').innerHTML = '';
+        document.getElementById('list-riya').innerHTML = '';
+        document.getElementById('sim-feedback').style.display = 'none';
+        document.getElementById('check-sim-btn').style.display = 'block';
+        document.getElementById('next-sim-btn').style.display = 'none';
+
+        simulasiItems.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'drag-item';
+            div.id = `sim-item-${item.id}`;
+            div.innerText = item.text;
+            div.onclick = () => selectSimItem(item.id);
+            container.appendChild(div);
+        });
+    }
+
+    function selectSimItem(id) {
+        selectedSimItem = id;
+        document.querySelectorAll('.drag-item').forEach(el => {
+            el.style.border = '1px solid #cbd5e1';
+            el.style.background = 'white';
+        });
+
+        const activeEl = document.getElementById(`sim-item-${id}`);
+        if (activeEl) {
+            activeEl.style.border = '2px solid var(--primary)';
+            activeEl.style.background = '#e6fffa';
+        }
+    }
+
+    function assignSelected(targetCategory) {
+        if (!selectedSimItem) {
+            alert('Pilih/klik salah satu pernyataan di atas terlebih dahulu!');
+            return;
+        }
+
+        const item = simulasiItems.find(i => i.id === selectedSimItem);
+        
+        // Remove from old categories
+        simAssignments.ikhlas = simAssignments.ikhlas.filter(i => i.id !== item.id);
+        simAssignments.riya = simAssignments.riya.filter(i => i.id !== item.id);
+
+        // Add to new
+        simAssignments[targetCategory].push(item);
+
+        // Move DOM element
+        const el = document.getElementById(`sim-item-${item.id}`);
+        document.getElementById(`list-${targetCategory}`).appendChild(el);
+        el.style.border = '1px solid #cbd5e1';
+        el.style.background = 'white';
+
+        selectedSimItem = null;
+    }
+
+    function checkSimulation() {
+        let correctCount = 0;
+        let total = simulasiItems.length;
+
+        simAssignments.ikhlas.forEach(i => { if(i.category === 'ikhlas') correctCount++; });
+        simAssignments.riya.forEach(i => { if(i.category === 'riya') correctCount++; });
+
+        const feedbackBox = document.getElementById('sim-feedback');
+        feedbackBox.style.display = 'block';
+
+        if (correctCount === total) {
+            playSound('correct');
+            userData.score += 20;
+            feedbackBox.className = 'feedback-box show correct';
+            feedbackBox.innerHTML = `<strong>Luar Biasa! 👏</strong> Semua perilaku berhasil kamu klasifikasikan dengan tepat! (+20 Poin)`;
+            document.getElementById('check-sim-btn').style.display = 'none';
+            document.getElementById('next-sim-btn').style.display = 'block';
+        } else {
+            playSound('wrong');
+            feedbackBox.className = 'feedback-box show wrong';
+            feedbackBox.innerHTML = `Kamu berhasil mengelompokkan ${correctCount} dari ${total} pernyataan dengan benar. Periksa kembali pilihanmu lalu coba klik verifikasi lagi!`;
+        }
+        updateHeaderStats();
+    }
+
+    /* ===================================================
+       FINAL SUMMARY & CERTIFICATE LOGIC
+       =================================================== */
+    function finishJourney() {
+        const c1 = document.getElementById('commit-1').value.trim();
+        const c2 = document.getElementById('commit-2').value.trim();
+
+        if (!c1 || !c2) {
+            alert('Mohon lengkapi kedua pertanyaan refleksi komitmenmu!');
+            return;
+        }
+
+        userData.commit1 = c1;
+        userData.commit2 = c2;
+
+        playSound('complete');
+
+        // Fill Certificate Data
+        document.getElementById('cert-name').innerText = userData.name;
+        document.getElementById('cert-class').innerText = 'Kelas: ' + userData.class;
+        document.getElementById('final-score').innerText = userData.score + ' / 120';
+
+        let predicate = 'Cukup';
+        if (userData.score >= 100) predicate = 'Sangat Baik (Siddiq)';
+        else if (userData.score >= 70) predicate = 'Baik (Ikhlas)';
+        
+        document.getElementById('final-predicate').innerText = predicate;
+        document.getElementById('cert-commit').innerText = `"${c1} Serta menjaga hati dengan cara: ${c2}"`;
+
+        showScreen('screen-result');
+    }
+
+    function restartGame() {
+        userData.score = 0;
+        userData.lives = 3;
+        document.getElementById('input-name').value = '';
+        document.getElementById('input-class').value = '';
+        document.getElementById('commit-1').value = '';
+        document.getElementById('commit-2').value = '';
+        updateHeaderStats();
+        showScreen('screen-welcome');
+    }
+</script>
+</body>
+</html>
